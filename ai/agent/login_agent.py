@@ -47,6 +47,7 @@ def login_agent(question:str):
     )
     #print(rs)
     print(rs["messages"][-1].content)
+    return rs["messages"][-1].content
 
 
 '''
@@ -57,4 +58,4 @@ if __name__ == "__main__":
     q2="你是谁，你有哪些工具"
     q3="邮件：2118541898@qq.com"
     q4="邮件：2118541898@qq.com,验证码8732"
-    login_agent(q4)
+    login_agent(q3)
