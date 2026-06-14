@@ -1,3 +1,4 @@
+from ai.tool import redis_tool,mysql_tool
 from ai.tool.send_email_tool import send_email_tool
 from langchain_openai import ChatOpenAI
 from langchain.agents import create_agent
@@ -22,7 +23,15 @@ def login_agent(question:str):
     tools = [send_email_tool]
     #3 定义提示词
     prompt = '''
-       ——你是一个邮件发送助手
+       一 你是一个邮件发送助手
+       二 业务流程
+         1：意图识别
+           如果用户问题含有以下关键字，'邮件'就触发发送验证码流程
+         2：发送验证码流程
+            步骤一：调用工具 mysql_tool 验证邮箱是否存在
+            步骤二：随机生成一个4位数的数字作为验证码
+            步骤三：发送一封邮件，邮件标题，重庆三峡科技大学验证码  邮件内容，你的验证码是：xxxx
+            
     '''
     #创建智能体
     agent = create_agent(model=model, tools=tools,system_prompt=prompt,debug=True)
@@ -39,4 +48,6 @@ def login_agent(question:str):
 '''
 if __name__ == "__main__":
     q1="给用户2118541898@qq.com发送一份邮件，告诉他今天下午三点来上课！"
-    login_agent(q1)
+    q2="你是谁，你有哪些工具"
+    q3="邮件：2118541898@qq.com"
+    login_agent(q3)
