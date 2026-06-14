@@ -4,6 +4,8 @@ from langchain.tools import tool
 import smtplib
 from dotenv import load_dotenv
 import os
+
+load_dotenv()
 #加载配置文件
 db_url = os.getenv("DATABASE_URL")
 db_root = os.getenv("DATABASE_USER")
@@ -35,7 +37,7 @@ def mysql_tool(sql:str)->tuple:
         return rs
     except Exception as e:
         print("数据库查询出现异常",e)
-        return ("数据可查询出现异常",)
+        return ("数据查询出现异常",)
     finally:
         #关闭游标对象
         cursor.close()
@@ -44,5 +46,5 @@ def mysql_tool(sql:str)->tuple:
 
 #测试工具是否可以使用
 if __name__ == '__main__':
-    rs = mysql_tool.invoke(sql="SELECT * FROM sales")
+    rs = mysql_tool.invoke({"sql":"SELECT * FROM user_info"})
     print(rs)
