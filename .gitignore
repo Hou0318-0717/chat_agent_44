@@ -1,0 +1,29 @@
+# Environment variables (contains secrets)
+.env
+
+# IDE
+.idea/
+.vscode/
+
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo
+
+# Build / distribution
+dist/
+build/
+*.egg-info/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Type checking / testing caches
+.mypy_cache/
+.pytest_cache/
+
+# OS generated files
+.DS_Store
+Thumbs.db
