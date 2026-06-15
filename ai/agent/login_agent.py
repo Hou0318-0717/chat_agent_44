@@ -39,7 +39,7 @@ def login_agent(question:str):
            步骤二：如果校验正确，请查询用户名，返回给用户
            步骤三：请返回给用用户的答案是：登录成功，用户名，其他文本信息不需要
     '''
-    #创建智能体
+    #4 创建智能体
     agent = create_agent(model=model, tools=tools,system_prompt=prompt,debug=True)
     #5 运行智能体
     rs = agent.invoke(
