@@ -34,8 +34,7 @@ def word_tool(content:str)->str:
         file_name = time.strftime("%Y%m%d%H%M%S",time.localtime())
         #保存文档
         docx.save(f"{file_path}/{file_name}.docx")
-        print(f"文档下载链接是：http://localhost:8080/static/{file_name}.docx")
-        return f"文档下载链接是：http://localhost:8080/static/{file_name}.docx"
+        return f"文档下载链接是:http://localhost:8080/static/{file_name}.docx"
     except Exception as e:
         print("写入word文档出现异常",e)
         return "写入word文档出现异常"
