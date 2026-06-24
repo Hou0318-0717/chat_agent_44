@@ -161,6 +161,3 @@ npm run dev
 | customer_behavior | 客户行为表 | user_id, product_id, action, action_date |
 | user_info | 用户表 | user_id, user_name, email, department |
 
-## License
-
-MIT
