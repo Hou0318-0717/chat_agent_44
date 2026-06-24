@@ -1,40 +1,66 @@
 from pydantic import BaseModel,Field
 from langchain.tools import tool
 from docx import Document
-from  dotenv import load_dotenv
+from docx.shared import Inches
+from dotenv import load_dotenv
 from pathlib import Path
+from ai.tool.chart_tool import render_chart_to_image
 import time
 import os
+import json
+import traceback
 load_dotenv()
 
 #工具参数类
 class WordParams(BaseModel):
     content:str = Field(...,description="文档内容")
+    chart_json:str = Field(None,description="ECharts配置JSON数组字符串, 多个用 ||| 分隔")
 
 '''
 写入word
 '''
 @tool("word_tool",args_schema=WordParams)
-def word_tool(content:str)->str:
+def word_tool(content:str, chart_json:str = None)->str:
     """
-    写入word文档
+    写入word文档，支持嵌入图表图片
     :param content:  文档内容
+    :param chart_json:  图表数据（ECharts JSON数组，多个用 ||| 分隔）
     :return:  返回一个下载链接
     """
     try:
         #创建一个文档对象
         docx = Document()
         #写入标题
-        docx.add_heading("文档标题",level=1)
+        docx.add_heading("数据分析报告",level=1)
         #写入正文
         docx.add_paragraph(content)
+
+        #嵌入图表图片
+        inserted_count = 0
+        if chart_json:
+            chart_strs = [c.strip() for c in chart_json.split("|||") if c.strip()]
+            print(f"[Word] 共{len(chart_strs)}个图表待插入")
+            for i, chart_str in enumerate(chart_strs):
+                try:
+                    option = json.loads(chart_str)
+                    img_path = render_chart_to_image(option)
+                    docx.add_picture(img_path, width=Inches(5.5))
+                    docx.paragraphs[-1].alignment = 1
+                    inserted_count += 1
+                    print(f"[Word] 图表{i+1}插入成功")
+                except Exception as e:
+                    print(f"[Word] 图表{i+1}插入失败:")
+                    traceback.print_exc()
+            print(f"[Word] 成功插入{inserted_count}/{len(chart_strs)}个图表")
+
         #获取文件路径
         file_path = os.getenv("FILE_PATH")
         #为了保证文件名唯一性
         file_name = time.strftime("%Y%m%d%H%M%S",time.localtime())
+        full_path = os.path.join(file_path, f"{file_name}.docx")
         #保存文档
-        docx.save(f"{file_path}/{file_name}.docx")
-        return f"文档下载链接是:http://localhost:8080/static/{file_name}.docx"
+        docx.save(full_path)
+        return f"文档文件路径:{full_path},下载链接:http://localhost:8080/static/{file_name}.docx"
     except Exception as e:
         print("写入word文档出现异常",e)
         return "写入word文档出现异常"

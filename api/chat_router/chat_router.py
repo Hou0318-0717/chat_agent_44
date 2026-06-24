@@ -12,18 +12,22 @@ def chat(question,name):
     #创建一个异步的迭代函数
     async def test():
             try:
-                async for c in anlyze_agent(question,name):
-                    #创建一个字典来定义数据格式
-                    msg = {"done":False,"data":c}
-                    #SSE流式输出格式
-                    yield f"data:{json.dumps(msg)}\n\n"
+                async for item in anlyze_agent(question,name):
+                    msg_type,content = item
+                    if msg_type == "text":
+                        msg = {"done":False,"type":"text","data":content}
+                        yield f"data:{json.dumps(msg)}\n\n"
+                    elif msg_type == "chart":
+                        print(f"[CHART] 图表数据已生成, 大小: {len(str(content))} 字符")
+                        msg = {"done":False,"type":"chart","data":content}
+                        yield f"data:{json.dumps(msg)}\n\n"
 
-                msg = {"done":True,"data":"流式结束"}
-                yield f"data:{json.dumps(msg)}\n\n"
+                yield f"data:{json.dumps({'done':True,'data':'流式结束'})}\n\n"
 
 
             except Exception as e:
-                print("出现异常",e)
+                import traceback
+                traceback.print_exc()
                 msg = {"done":True,"data":"出现异常"}
                 yield f"data:{json.dumps(msg)}\n\n"
     return StreamingResponse(test(),media_type="text/event-stream")

@@ -1,5 +1,31 @@
-# Environment variables (contains secrets)
+# Environment variables (contains secrets: API keys, passwords)
 .env
+
+# Generated helper scripts (build-time only)
+make_logs*.py
+write_d*.py
+expand_logs*.py
+add_project*.py
+fill_logs.py
+create_report*.py
+draw_arch.*
+
+# Generated data caches
+log_content/
+logs_data.json
+
+# Generated static output (downloads, images)
+static/*.png
+static/*.docx
+static/*.xlsx
+static/*.html
+static/*.csv
+
+# Personal documents (resume, internship logs, reports)
+*.doc
+*.docx
+*.pdf
+!requirements.txt
 
 # IDE
 .idea/
@@ -27,3 +53,7 @@ env/
 # OS generated files
 .DS_Store
 Thumbs.db
+
+# Word temp files
+~$*.docx
+~$*.doc
